@@ -24,8 +24,9 @@ tm_player_injury_history <- function(player_urls) {
 
     player_url_fixed <- gsub("profil", "verletzungen", player_url) %>% paste0(., "/plus/1")
 
-    injury_page <- xml2::read_html(player_url_fixed)
-
+    response <- httr::GET(player_url_fixed, httr::user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"))
+    injury_page <- xml2::read_html(httr::content(response, "text"))
+    
     player_name <- injury_page %>% rvest::html_nodes("h1") %>% rvest::html_text()
 
     injury_urls <- injury_page %>% html_nodes(".tm-pagination__list-item a") %>% html_attr("href")
